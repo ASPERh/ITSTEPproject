@@ -1,0 +1,7 @@
+﻿  ConsoleApplication3.cpp
+D:\VisualStudioProjects\ConsoleApplication3\ConsoleApplication3\ConsoleApplication3.cpp(36,15): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+D:\VisualStudioProjects\ConsoleApplication3\ConsoleApplication3\ConsoleApplication3.cpp(154,27): warning C4101: coins_info: неиспользованная локальная переменная
+D:\VisualStudioProjects\ConsoleApplication3\ConsoleApplication3\ConsoleApplication3.cpp(168,27): warning C4101: coins_info: неиспользованная локальная переменная
+D:\VisualStudioProjects\ConsoleApplication3\ConsoleApplication3\ConsoleApplication3.cpp(207,19): warning C4101: coins_info: неиспользованная локальная переменная
+D:\VisualStudioProjects\ConsoleApplication3\ConsoleApplication3\ConsoleApplication3.cpp(227,19): warning C4101: HP_info: неиспользованная локальная переменная
+  ConsoleApplication3.vcxproj -> D:\VisualStudioProjects\ConsoleApplication3\x64\Debug\ConsoleApplication3.exe
