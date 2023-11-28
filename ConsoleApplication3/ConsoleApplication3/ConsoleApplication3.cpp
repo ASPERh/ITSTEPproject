@@ -1,20 +1,34 @@
-﻿#include <iostream>
-#include <Windows.h>
-#include <ctime>
-#include <cmath>
-#include <vector>
-#include <string>
-#include <conio.h>
-#include <fcntl.h>
-#include <io.h>
-using namespace std;
-
-enum Colors { BLACK, DARKBLUE, DARKGREEN, DARKCYAN, DARKRED, DARKMAGENTA, DARKYELLOW, GREY, DARKGREY, BLUE, GREEN, CYAN, RED, MAGENTA, YELLOW, WHITE };
-HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-enum Directions { LEFT = 75, RIGHT = 77, DOWN = 80, UP = 72, SHOP = 98 };
-enum Objects { HALL = 0, WALL = 1, COIN = 2, ENEMY = 3, HEAL = 4 };
+﻿#include "Header.h"
 
 int maze[25][60] = {};
+
+// Функция для управления перемещением вверх
+void MoveUp(COORD& position, int maze[][60]) 
+{
+    if (maze[position.Y - 1][position.X] != 1)
+        position.Y--;
+}
+
+// Функция для управления перемещением вниз
+void MoveDown(COORD& position, int maze[][60]) 
+{
+    if (maze[position.Y + 1][position.X] != 1)
+        position.Y++;
+}
+
+// Функция для управления перемещением влево
+void MoveLeft(COORD& position, int maze[][60]) 
+{
+    if (maze[position.Y][position.X - 1] != 1)
+        position.X--;
+}
+
+// Функция для управления перемещением вправо
+void MoveRight(COORD& position, int maze[][60]) 
+{
+    if (maze[position.Y][position.X + 1] != 1)
+        position.X++;
+}
 
 void SetCursor(int x, int y, Colors color, string text)
 {
@@ -28,10 +42,10 @@ void SetCursor(int x, int y, Colors color, string text)
     cout << "\n";
 }
 
-void initializeConsole()
+void InitializeConsole()
 {
     SetConsoleOutputCP(CP_UTF8);
-    system("title Maze");
+    system("title Maze"); // меняет заголовок приложение на Maze
     HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
     srand(time(0));
 
@@ -41,13 +55,12 @@ void initializeConsole()
     SetConsoleCursorInfo(h, &info);
 }
 
-void generateMaze(int maze[][60], const int height, const int width) // Генерация лабиринта
+void GenerateMaze(int maze[][60], const int height, const int width) // Генерация лабиринта
 {
     for (int y = 0; y < height; y++)
     {
         for (int x = 0; x < width; x++)
         {
-            // GENERATION
             maze[y][x] = rand() % 5;
 
             if (x == 0 || y == 0 || x == width - 1 || y == height - 1)
@@ -77,7 +90,7 @@ void generateMaze(int maze[][60], const int height, const int width) // Гене
     }
 }
 
-void printMaze(int maze[][60], const int height, const int width) // вывод массива
+void PrintMaze(int maze[][60], const int height, const int width) // вывод массива
 {
     for (int y = 0; y < height; y++)
     {
@@ -112,7 +125,7 @@ void printMaze(int maze[][60], const int height, const int width) // вывод 
     }
 }
 
-void gameLoop(int maze[][60], const int height, const int width, int& coins, int& enemyDAMAGE, int& medkitHEAL) // Логика игры
+void GameLoop(int maze[][60], const int height, const int width, int& coins, int& enemyDAMAGE, int& medkitHEAL) // Логика игры
 {
     COORD position;
     position.X = 0;
@@ -121,13 +134,15 @@ void gameLoop(int maze[][60], const int height, const int width, int& coins, int
     SetCursor(position.X, position.Y, MAGENTA, "0");
 
     int HealthPoints = 100;
+    int* pHealthPoints = &HealthPoints;
 
     const int COIN_COST = 5;
     const int ENEMY_DAMAGE_UPGRADE_COST = 10; // стоимость улучшения 
     const int HEALTH_KIT_HEAL_UPGRADE_COST = 8; // стоимость улучшения 
 
     while (true)
-    {
+     {
+        SetCursor(width + 2, 11, YELLOW, "Press B to open shop");
         int code = _getch();
         if (code == 224) // позволяет кнопке "B" работать
         {
@@ -153,7 +168,7 @@ void gameLoop(int maze[][60], const int height, const int width, int& coins, int
                     coins -= ENEMY_DAMAGE_UPGRADE_COST;
                     COORD coins_info;
                     SetCursor(width + 2, 1, YELLOW, "COINS:");
-                    SetCursor(width + 8, 1, YELLOW, to_string(coins));
+                    SetCursor(width + 8, 1, YELLOW, to_string(coins) + " ");
                 }
                 else
                 {
@@ -185,20 +200,19 @@ void gameLoop(int maze[][60], const int height, const int width, int& coins, int
 
         SetConsoleCursorPosition(h, position);
         cout << " ";
-        if (code == RIGHT and maze[position.Y][position.X + 1] != 1) // если нажата стрелка вправо то
-            position.X++; // позиция гг меняется на X++ то есть направо
-        if (code == LEFT and maze[position.Y][position.X - 1] != 1) // если нажата стрелка влево то
-            position.X--; // позиция гг меняется на X-- то есть налево
-        if (code == UP and maze[position.Y - 1][position.X] != 1) // если нажата стрелка вверх то
-            position.Y--; // позиция гг меняется на Y-- то есть вверх
-        if (code == DOWN and maze[position.Y + 1][position.X] != 1) // если нажата стрелка вниз то
-            position.Y++; // позиция гг меняется на Y++ то есть вниз
+        if (code == UP) // если нажата стрелка вверх
+            MoveUp(position, maze); // то гг идёт вверх
+        if (code == DOWN) // если нажата стрелка вниз
+            MoveDown(position, maze); // то гг идёт вниз
+        if (code == LEFT) // если нажата стрелка влево
+            MoveLeft(position, maze); // то гг идёт влево 
+        if (code == RIGHT) // если нажата стрелка вправо
+            MoveRight(position, maze); // то гг идёт вправо
         SetCursor(position.X, position.Y, MAGENTA, "0"); // перемещение гг
 
         if (position.X == width - 1 and position.Y == height - 3) // если позиция гг равна позиции финиша то
         {
-            MessageBoxA(0, "You are complete labyrinth", "win", MB_OK); // выводится этот текст
-            break;
+            MessageBoxA(0, "You are pass labyrinth", "win", MB_OK); // выводится этот текст
         }
         if (maze[position.Y][position.X] == COIN) // если гг наступает на монету то
         {
@@ -212,16 +226,16 @@ void gameLoop(int maze[][60], const int height, const int width, int& coins, int
         {
             if (maze[position.Y][position.X] == ENEMY) // если это ENEMY то
             {
-                HealthPoints = HealthPoints - enemyDAMAGE; // отнимается HealthPoints = равный enemyDamage
+                *pHealthPoints -= enemyDAMAGE; // отнимается HealthPoints = равный enemyDamage
                 maze[position.Y][position.X] = HALL; // и место где была монета меняется на обьект HALL
             }
             if (maze[position.Y][position.X] == HEAL) // если это HEAL то
             {
-                HealthPoints = HealthPoints + medkitHEAL; // прибавляется к HealthPoints число которе записано в переменной medkitHeal которое равняется 25
+                *pHealthPoints += medkitHEAL; // прибавляется к HealthPoints число которе записано в переменной medkitHeal которое равняется 25
                 maze[position.Y][position.X] = HALL; // и место где была монета меняется на обьект HALL
-                if (HealthPoints > 100) // также если при поднятии HEAL но если у гг HealthPoints > 100
+                if (*pHealthPoints > 100)  // также если при поднятии HEAL но если у гг HealthPoints > 100
                 {
-                    HealthPoints = 100; // то HealthPoints будет равен 100
+                    *pHealthPoints = 100; // то HealthPoints будет равен 100
                 }
             }
             COORD HP_info;
@@ -339,7 +353,7 @@ void gameLoop(int maze[][60], const int height, const int width, int& coins, int
     Sleep(INFINITE);
 }
 
-void mainMenu(const int height, const int width, int& coins, int& enemyDAMAGE, int& medkitHEAL) // главное меню
+void MainMenu(const int height, const int width, int& coins, int& enemyDAMAGE, int& medkitHEAL) // главное меню
 {
     int choice;
     cout << "=== Main Menu ===\n";
@@ -351,9 +365,9 @@ void mainMenu(const int height, const int width, int& coins, int& enemyDAMAGE, i
     switch (choice)
     {
     case 1: // если выбор = 1 то запускаются функции ниже
-        generateMaze(maze, height, width);
-        printMaze(maze, height, width);
-        gameLoop(maze, height, width, coins, enemyDAMAGE, medkitHEAL);
+        GenerateMaze(maze, height, width);
+        PrintMaze(maze, height, width);
+        GameLoop(maze, height, width, coins, enemyDAMAGE, medkitHEAL);
         break;
 
     case 2: // если выбор = 2 то программа заканчивается
@@ -368,7 +382,7 @@ void mainMenu(const int height, const int width, int& coins, int& enemyDAMAGE, i
 
 int main()
 {
-    initializeConsole();
+    InitializeConsole();
 
     const int width = 60;
     const int height = 25;
@@ -378,7 +392,7 @@ int main()
 
     while (true)
     {
-        mainMenu(height, width, coins, enemyDAMAGE, medkitHEAL);
+        MainMenu(height, width, coins, enemyDAMAGE, medkitHEAL);
     }
 
     return 0;
