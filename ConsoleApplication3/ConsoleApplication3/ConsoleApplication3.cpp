@@ -136,11 +136,11 @@ void gameLoop(int maze[][60], const int height, const int width, int& coins, int
 
         if (code == SHOP) // Если игрок нажал "B"
         {
-            SetCursor(width + 2, 5, YELLOW, "Добро пожаловать в магазин!");
-            SetCursor(width + 2, 6, YELLOW, "1. Увеличить урон противников(усложнение) (Cost: " + to_string(ENEMY_DAMAGE_UPGRADE_COST) + " coins)");
-            SetCursor(width + 2, 7, YELLOW, "2. Улучшить исцеление от медикоментов(I) (Cost: " + to_string(HEALTH_KIT_HEAL_UPGRADE_COST) + " coins)");
-            SetCursor(width + 2, 8, YELLOW, "3. Выйти из магазина");
-            SetConsoleCursorPosition(h, { static_cast<SHORT>(width + 2), 10 }); // Перемещение текстового курсора в позицию
+            SetCursor(width + 2, 5, YELLOW, "Welcome");
+            SetCursor(width + 2, 6, YELLOW, "1. Upgrade enemy damage  (Cost: " + to_string(ENEMY_DAMAGE_UPGRADE_COST) + " coins)");
+            SetCursor(width + 2, 7, YELLOW, "2. Upgrade medkit heal (Cost: " + to_string(HEALTH_KIT_HEAL_UPGRADE_COST) + " coins)");
+            SetCursor(width + 2, 8, YELLOW, "3. Exit");
+            SetConsoleCursorPosition(h, { (SHORT)(width + 2), 10 });
             int choice;
             cin >> choice;
 
@@ -157,7 +157,7 @@ void gameLoop(int maze[][60], const int height, const int width, int& coins, int
                 }
                 else
                 {
-                    SetCursor(width + 2, 9, YELLOW, "Не хватает монет"); // или говорит то что не хватает монет
+                    SetCursor(width + 2, 9, YELLOW, "Not enough coins"); // или говорит то что не хватает монет
                 }
                 break;
             case 2:
@@ -171,14 +171,14 @@ void gameLoop(int maze[][60], const int height, const int width, int& coins, int
                 }
                 else
                 {
-                    SetCursor(width + 2, 9, YELLOW, "Не хватает монет"); // или говорит то что не хватает монет
+                    SetCursor(width + 2, 9, YELLOW, "Not enough coins"); // или говорит то что не хватает монет
                 }
                 break;
             case 3:
                 // Выход из магазина
                 break;
             default:
-                cout << "Некорректный выбор\n";
+                SetCursor(width + 2, 9, YELLOW, "Incorrect Choice"); // выбор не 1 и не 2
                 break;
             }
         }
@@ -197,7 +197,7 @@ void gameLoop(int maze[][60], const int height, const int width, int& coins, int
 
         if (position.X == width - 1 and position.Y == height - 3) // если позиция гг равна позиции финиша то
         {
-            MessageBoxA(0, "Вы прошли лабиринт", "победа", MB_OK); // выводится этот текст
+            MessageBoxA(0, "You are complete labyrinth", "win", MB_OK); // выводится этот текст
             break;
         }
         if (maze[position.Y][position.X] == COIN) // если гг наступает на монету то
@@ -230,7 +230,7 @@ void gameLoop(int maze[][60], const int height, const int width, int& coins, int
             if (HealthPoints < 5) // если HealthPoints < 5 то 
             {
                 system("cls"); // вся консоль стирается командой CLS
-                cout << "проигрыш\n\n"; // и выводится надпись проигрыш
+                cout << "you lose\n\n"; // и выводится надпись проигрыш
                 Sleep(INFINITE);
             }
 
@@ -335,7 +335,7 @@ void gameLoop(int maze[][60], const int height, const int width, int& coins, int
     }
 
     system("cls");
-    cout << "победа\n\n";
+    cout << "win\n\n";
     Sleep(INFINITE);
 }
 
@@ -361,7 +361,7 @@ void mainMenu(const int height, const int width, int& coins, int& enemyDAMAGE, i
         break;
 
     default: // если выбор не 1 и не 2 то
-        cout << "Неверный выбор выберите 1 или 2\n"; // выдается это сообщение
+        cout << "Incorrect choice, choose 1 or 2\n"; // выдается это сообщение
         break;
     }
 }
